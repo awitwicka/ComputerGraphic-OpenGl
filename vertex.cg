@@ -1,0 +1,27 @@
+void vertex(float4 position : POSITION,
+	    float4 color : COLOR,
+            float2 texcoord : TEXCOORD0,
+            out float2 out_texcoord : TEXCOORD0,
+
+	    float3 direction : TEXCOORD1, //velocity
+    	    float2 age : TEXCOORD2, //t_now, t_max
+
+	    out float4 out_color : COLOR,
+	    out float4 out_position : POSITION,
+	    out float out_psize : PSIZE,
+
+ 	    uniform float4x4 modelview_proj) {
+  
+  float a = 9.8;
+  position.xyz += direction*age.x;  //s = s_old + v*t
+  position.z -= (age.x*age.x*a)*0.1; //speed and gravity
+  out_position = mul(modelview_proj, position);
+
+  float size = 6;
+  out_psize = min(age.x, (age.y-age.x))*size;
+  //out_psize = (age.y-age.x)*size;
+
+  out_color = color;
+  out_texcoord = texcoord;
+}
+
