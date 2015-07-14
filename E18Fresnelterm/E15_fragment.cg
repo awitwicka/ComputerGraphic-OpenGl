@@ -1,0 +1,51 @@
+
+
+void per_fragment_lighting(float4 position  : TEXCOORD0,
+                        float3 normal       : TEXCOORD1,
+                    out float4 out_color    : COLOR,
+		uniform float3 ambient_light,	   // color of the ambient light
+		uniform float3 light_color,        // color of the diffuse light
+		uniform float4 light_position,     // position of the light (in world coordinates)
+		uniform float4 camera_position,    // position of the viewer (in world coordinates)
+		uniform float3 Ke,                 // material properties: emittive part
+		uniform float3 Ka,		   // material properties: ambient part
+		uniform float3 Kd,		   // material properties: diffuse part
+		uniform float3 Ks,		   // material properties: specular part
+		uniform float exponent             // material properties: exponent for specular part
+){
+
+
+  int makeItZero = 1; 
+  float gaussConstant = 10;
+  float m = 0.2;
+
+  float3 P = position.xyz;
+  float3 N = normalize(normal);
+
+  float3 emissive = Ke;
+
+  float3 ambient = Ka*ambient_light;
+
+  float3 L = normalize(light_position - P);
+  float3 diffuse = Kd*light_color*max(dot(N, L),0);
+   
+  float PI = 3.14159265359;
+  float3 V = normalize(camera_position - P);
+  float3 H = normalize(L + V);
+  float nl = max(dot(N, L),0.001);
+  float nv = max(dot(N, V),0.001);
+  float vh = max(dot(V, H),0.001);
+  float nh = max(dot(N, H),0.001);
+  float b = acos(nh);
+  float3 G = min(1.0, min((2*nh*nv/vh),(2*nh*nl/vh)));
+  float3 F0 = (0.75, 0.5, 0.1);
+  float3 F = F0+(1-F0)*pow(1-max(dot(H, V),0.001),5);
+  float3 D = gaussConstant*exp(-(b*b)/(m*m));
+  float3 ps = (F*D*G)/(PI*nv*nl);
+  float3 specular = Ks*light_color*nl*ps;
+
+  out_color.xyz = emissive + ambient + diffuse + specular;
+  out_color.w = 1.0;
+
+}
+

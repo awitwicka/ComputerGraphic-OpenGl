@@ -1,0 +1,43 @@
+/* 
+  More complex vertex shader
+  by Daniel Jungblut, IWR Heidelberg, February 2008
+  revised by Susanne Kroemker, IWR Heidelberg, April 2014
+ */  
+/*
+  1) By defining variable as uniform we let the program know that its value 
+     comes from the enviroment that is external to cg program,
+     we can then register a variable with its special keyword through main program,
+     and retrive its value in a shader proogram.
+     Normal variables can be declared and operate only within a single file 
+     and semantics can get a verex information using predefined keywords.
+
+  2) it's an argument passing convention, where the argument is an variable
+     and is then copied to the local variable inside a function; 
+     when the local variable is changed argument won't be affected untill procedure returns,
+     then local variable is copied to the argument
+
+  3) if i understand correctly this question is about for example 'float4x' vectors 
+     that are unique for Cg programms and don't exist in C;
+     they exists cause all matrix operation like multiplication, summing etc. 
+     are performed in alot more efficient manner, and were created especially for this purpose;
+     also most vectors in opengl neeed 4 dimensions as it's required by special representations
+     of a point in 3D space (x, y, z, w)
+*/
+
+#define PI 3.14159265
+
+void more_complex_vertex_shader(float4 position : POSITION,
+                        out float4 out_position : POSITION,
+                        uniform float scale_factor,
+			uniform float rotation_angle) {
+
+  // Create scaling matrix
+  float2x2 scale_matrix = float2x2(scale_factor, 0.0, 0.0, scale_factor);
+
+  // Create rotation matrix -> change of radian-> degrees
+  float2x2 rotation_matrix = float2x2(cos(rotation_angle * PI / 180.0 ), -sin(rotation_angle * PI / 180.0 ), sin(rotation_angle * PI / 180.0 ), cos(rotation_angle * PI / 180.0 ));
+
+  // Transform vertices by applying scaling matrix and the rotation matrix  
+  //out_position = float4(mul(scale_matrix, position.xy), 0, 1);
+  out_position = float4(mul(mul(scale_matrix, position.xy), rotation_matrix), 0, 1);
+}

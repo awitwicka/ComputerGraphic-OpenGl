@@ -1,0 +1,18 @@
+/* 
+  Vertex shader
+  by Daniel Jungblut, IWR Heidelberg University, February 2008
+  revised by Susanne Kroemker, IWR Heidelberg University, April 2014
+*/  
+
+
+void vertex_shader(float4 position : POSITION,
+			out float4 out_position : POSITION,
+                        float2 texcoord : TEXCOORD0,
+			out float2 out_texcoord : TEXCOORD0) {//,
+//out float2 rightTexCoord : TEXCOORD1) {
+
+  out_texcoord = texcoord;//+10;
+//rightTexCoord = texcoord-10;
+  out_position = position;
+
+}

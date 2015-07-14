@@ -1,0 +1,66 @@
+# simple.rib - simple rib-file to generate an illuminated sphere with 3DeLight.
+# by Daniel Jungblut, IWR Heidelberg, May 2008 - daniel.jungblut@iwr.uni-heidelberg.de
+# updated by Susanne Kroemker, IWR Heidelberg, May 2014 -- susanne.kroemker@iwr.uni-heidelberg.de
+
+
+# resolution of output image
+Format 800 600 1
+
+# resolution of fragments
+# question: what is the difference between a fragment and a pixel?
+PixelSamples 3 3
+
+# name and format of the output
+Display "output.tif" "file" "rgb"
+
+# camera projection and field of view
+Projection "perspective" "fov" 45
+
+# camera position
+Translate 0 -1.5 10
+Rotate 270 1 0 0
+
+# draw objects and light sources
+WorldBegin
+
+  LightSource "ambientlight" 1 "intensity" 0.5
+  LightSource "distantlight" 2 "from" [0 0 1] "to" [5 10 1]
+
+  # call a shader
+  # this illustrates how parameters are handed to the shader
+  Surface "bump_mapping" "string texture_map" "marscompiled.tif" "string bump_map" "marsheightcompiled.tif" "float exponent" 0.5 
+ 
+  # TransformBegin and TransformEnd correspond to the matrixstack operations known from OpenGL
+  TransformBegin
+    # positioning of center and coordinate axis rotations
+    Translate 0.0 -10.0 0.0
+    Rotate 180 1 0 0
+    # draw a spherical object called Mars
+    Sphere 5 -5 5 360
+  TransformEnd
+
+ Surface "bump_mapping" "string texture_map" "phoboscompiled.tif" "string bump_map" "phobosheightcompiled.tif" "float exponent" 0.5
+  TransformBegin
+    # positioning of center and coordinate axis rotations
+    Translate -2.0 0.0 0.0
+    #Rotate 180 1 0 0
+    Sphere 1 -1 1 360
+  TransformEnd
+
+ Surface "bump_mapping" "string texture_map" "deimoscompiled.tif" "string bump_map" "deimosbumpcompiled.tif" "float exponent" 0.5 
+ TransformBegin
+    # positioning of center and coordinate axis rotations
+    Translate 10.0 -20.0 0.0
+    #Rotate 180 1 0 0
+    Sphere 1 -1 1 360
+  TransformEnd
+
+Surface "bump_mapping" "string texture_map" "tilecompiled.tif" "string bump_map" "tilebumpcompiled.tif" "float exponent" 0.5 
+ TransformBegin
+    # positioning of center and coordinate axis rotations
+    Translate 5.0 0.0 5.0
+    #Rotate 180 1 0 0
+    Sphere 2 -2 1 360
+  TransformEnd
+
+WorldEnd

@@ -1,0 +1,43 @@
+/* 
+  Vertex shader for cube mapping
+  by Daniel Jungblut, IWR Heidelberg, February 2008.
+*/  
+
+
+
+void vertex_shader_for_environment_mapping (
+
+		float4 position : POSITION,			// Vertexkoordinaten im Objektraum
+		float2 texcoord : TEXCOORD0,			// Texturkoordinaten (hier nicht benötigt)
+		float3 normal : NORMAL,				// Normale im Objektraum  -> change
+
+                out float4 out_position : POSITION,		// Transformierte Vertexkoordinaten im Bildraum -> change
+                out float2 out_texcoord : TEXCOORD0, 		// Texturkoordinaten (hier nicht benötigt)
+		out float3 reflection_direction : TEXCOORD1,	// Reflexionsrichtung für CubeMapping
+
+		uniform float4x4 modelview_proj,		      // Modelview-Projection Matrix
+		uniform float4x4 modelview,			// Modelview-Matrix (hier nicht benötigt) -> ?
+
+		uniform float3 camera_position,			// Kamera-Position	
+		uniform float camera_angle_phi,			// Kamera-Position in Kugelkoordinaten (nicht benötigt)
+		uniform float camera_angle_theta,
+		uniform float camera_radius
+		) {	
+
+
+  out_position = mul(modelview_proj, position);
+  out_texcoord = texcoord;
+
+  // Hinweis: Verwenden Sie die in Cg vorhandene Funktion reflect(...)
+  
+  float3 world_pos = mul(modelview, position).xyz;
+  float3 word_N = mul((float3x3)modelview, normal);
+  
+  float3 viewVector = normalize(camera_position - world_pos); 
+  reflection_direction = reflect(-normalize(viewVector), normalize(word_N));
+
+	
+}
+
+
+

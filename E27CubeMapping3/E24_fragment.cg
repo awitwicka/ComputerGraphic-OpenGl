@@ -1,0 +1,29 @@
+/* 
+  Fragment shader for cube mapping
+  by Daniel Jungblut, IWR Heidelberg, February 2008.
+*/  
+
+
+
+void fragment_shader_for_environment_mapping (
+
+		float2 texcoord : TEXCOORD0,
+		float3 reflection_direction : TEXCOORD1, // Reflexionsrichtung
+
+		out float4 out_color : COLOR,		// Ausgabefarbe des Pixels
+
+		uniform float reflectivity,		// Stärke der Reflexion
+		uniform sampler2D texture_map,		// Texturemap (hier nicht benötigt)
+		uniform samplerCUBE environment_map	// CubeMap
+		) {	
+
+  // So kann auf die CubeMap zugegriffen werden:
+  
+  float4 decalColor = tex2D(texture_map, texcoord);
+  float4 refractedColor = texCUBE(environment_map, reflection_direction);
+  out_color = lerp(decalColor, refractedColor, reflectivity);
+
+
+  //out_color = texCUBE(environment_map, reflection_direction);
+     
+}

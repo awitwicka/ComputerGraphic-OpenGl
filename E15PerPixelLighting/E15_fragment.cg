@@ -1,0 +1,36 @@
+
+
+void per_fragment_lighting(float4 position  : TEXCOORD0,
+                        float3 normal       : TEXCOORD1,
+                    out float4 out_color    : COLOR,
+		uniform float3 ambient_light,	   // color of the ambient light
+		uniform float3 light_color,        // color of the diffuse light
+		uniform float4 light_position,     // position of the light (in world coordinates)
+		uniform float4 camera_position,    // position of the viewer (in world coordinates)
+		uniform float3 Ke,                 // material properties: emittive part
+		uniform float3 Ka,		   // material properties: ambient part
+		uniform float3 Kd,		   // material properties: diffuse part
+		uniform float3 Ks,		   // material properties: specular part
+		uniform float exponent             // material properties: exponent for specular part
+){
+
+
+  int makeItZero = 1; 
+  float3 P = position.xyz;
+  float3 N = normalize(normal);
+
+  float3 emissive = Ke;
+
+  float3 ambient = Ka*ambient_light;
+
+  float3 diffuse = Kd*light_color*max(dot(normalize(light_position - P), N),0);
+  
+  if (max(dot(normalize(light_position - P), N),0)<=0) {makeItZero = 0;}
+  float3 specular = Ks*light_color*pow(max(dot(N, normalize(normalize(light_position - P) + normalize(camera_position - P))),0), exponent)*makeItZero;
+
+
+  out_color.xyz = emissive + ambient + diffuse + specular;
+  out_color.w = 1.0;
+
+}
+

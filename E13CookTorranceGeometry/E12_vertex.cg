@@ -1,0 +1,72 @@
+/* 
+  Vertex shader for simple light models
+  by Daniel Jungblut, IWR Heidelberg, February 2008
+  revised by Susanne Kroemker, IWR Heidelberg, May 2014
+*/  
+
+
+
+// simplified Blinn-Phong shading light model for a single light source 
+// light source can be moved with the space bar
+// consider all vector geometry calculations in world coordinate system
+// the following functions may be helpful
+//
+// normalization of a vector
+// A = normalize(B);  
+//
+// scalar (or dot) product
+// float s = dot(A, B);
+//
+// maximum
+// float m = max(a, b);
+//
+// power function
+// float p = pow(a, b);
+
+ 
+
+void per_vertex_lighting(
+		float4 position : POSITION,	   // input coordinates in object space
+		out float4 out_position : POSITION,// output coordinates in monitor space
+		uniform float3 translation, 
+		float3 normal : NORMAL, 	   // surface normals in object space
+		out float4 out_color : COLOR,      // output color of a vertex
+		uniform float4x4 modelview_proj,   // concatenation of modelview und projection matrix
+
+		uniform float3 ambient_light,	   // color of the ambient light
+		uniform float3 light_color,        // color of the diffuse light
+		uniform float4 light_position,     // position of the light (in world coordinates)
+		uniform float4 camera_position,    // position of the viewer (in world coordinates)
+		uniform float3 Ke,                 // material properties: emittive part
+		uniform float3 Ka,		   // material properties: ambient part
+		uniform float3 Kd,		   // material properties: diffuse part
+		uniform float3 Ks,		   // material properties: specular part
+		uniform float exponent             // material properties: exponent for specular part
+		) {
+
+  float makeItZero = 1;
+  out_position = mul(modelview_proj, position);
+
+  float3 P = position.xyz + translation;   // vertex in world coordinates
+  float3 N = normalize(normal);			   // normal in world coordinates
+ 
+  float3 emissive = Ke;
+
+  float3 ambient = Ka*ambient_light;
+
+  float3 L = normalize(light_position - P);
+  float3 diffuse = Kd*light_color*max(dot(N, L),0);
+  
+  float PI = 3.14159265359;
+  float3 V = normalize(camera_position - P);
+  float3 H = normalize(L + V);
+  float3 G = min(1, min((2*max(dot(N, H),0)*max(dot(N, V),0)/max(dot(V, H),0)),(2*max(dot(N, H),0)*max(dot(N, L),0)/max(dot(V, H),0))));
+  float3 ps = G/(PI*max(dot(N, V),0)*max(dot(N, L),0));
+  if (max(dot(N, L),0)<=0) {makeItZero = 0;}
+  float3 specular = Ks*light_color*max(dot(N, L),0)*ps*makeItZero;
+  
+
+
+  out_color.xyz = emissive + ambient + diffuse + specular;
+  out_color.w = 1.0;
+}

@@ -1,0 +1,28 @@
+/* 
+  Vertex shader
+  by Daniel Jungblut, IWR Heidelberg University, February 2008
+  revised by Susanne Kroemker, IWR Heidelberg University, April 2014
+*/  
+/*
+ sincos
+
+ function sincos can receive scalars or vectors as an input, then it calculates sinus and cosine values for every element in the input vector
+
+*/
+
+void vertex_shader(float4 position : POSITION,
+			out float4 out_position : POSITION,
+                        float2 texcoord : TEXCOORD0,
+			out float2 out_texcoord : TEXCOORD0) {
+  texcoord -=0.5; //center the screen -> shift coordinates, make 0,0 center of screen
+
+  float r = sqrt(pow(texcoord.x, 2)+pow(texcoord.y, 2)); //transform to polar
+  float theta = atan(texcoord.y, texcoord.x);
+  
+  float x, y;
+  sincos(theta ,x, y);
+  out_texcoord += vec2(x, -y);
+  //out_texcoord = texcoord;
+  out_position = position;
+
+}

@@ -1,0 +1,11 @@
+/* 
+  Simple fragment shader
+  by Daniel Jungblut, IWR Heidelberg, February 2008
+  revised by Susanne Kroemker, IWR Heidelberg, April 2014
+*/  
+
+void simple_fragment_shader(/*out float4 out_color : COLOR,
+			    uniform float3 color*/) {	
+
+  //out_color = float4(color, 1.0);
+}

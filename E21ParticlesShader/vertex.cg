@@ -1,0 +1,36 @@
+/* 
+  More complex vertex shader
+  by Daniel Jungblut, IWR Heidelberg, February 2008
+  revised by Susanne Kroemker, IWR Heidelberg, April 2014
+ */  
+struct particle {
+  
+
+}
+
+void more_complex_vertex_shader(
+		float4 position : POSITION,
+  		float3 velocity : TEXCOORD0, //4
+  		float time : TEXCOORD1;		
+  		//float lifeTime : TEXCOORD0; 
+  		//bool isAlieve : TEXCOORD0;  
+  		out float4 out_position : POSITION,
+		out float4 out_color     : COLOR,
+                out float  out_pointSize : PSIZE,
+
+            uniform float    globalTime,
+            uniform float4   acceleration,
+) {
+
+  float t = globalTime - time;
+  float4 pFinal = position + (velocity * t) + (0.5 * acceleration * t * t);
+
+
+
+  out_position = pFinal;
+  out_color = float4(t, t, t, 1);
+  out_pointSize = -8.0 * t * t +
+               8.0 * t +
+               0.1 * pFinal.y + 1;
+
+}

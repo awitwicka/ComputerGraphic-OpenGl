@@ -1,0 +1,40 @@
+/* 
+  Simple vertex shader
+  by Daniel Jungblut, IWR Heidelberg, February 2008.
+*/  
+
+
+
+/* 
+  Answers to questions
+  1) compiler doesnt include shader to the programm, 
+     instead it loades it from the file during execution 
+     (cgCreateProgramFromFile(cg_context, CG_SOURCE, "E03.cg", ...)
+     
+  2) in shader program given parameter has a special identifier called 'semantic' 
+     which is written after a colon (example: position : POSITION), 
+     it indicates how variable is connected to the rest of a graphic pipelines
+
+  3) it can change all information about vertex it receives and add more like:
+     color, position, normal (NORMAL), texture (TEXCOORD0, TEXTCOORD1, ...)
+
+
+*/
+
+struct Output {
+  float4 position : POSITION;
+  float3 color    : COLOR;
+};
+
+
+Output simple_vertex_shader(float2 position : POSITION)  {
+
+  Output output;
+
+  output.position = float4(position, 0, 1);
+  output.position.y = position.y+0.15;
+  //output.color = float3(0.8, 0.2, 0.0);
+  output.color = float3(position.x, position.y, position.y+1);
+
+  return output;
+}

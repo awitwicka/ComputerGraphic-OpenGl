@@ -1,0 +1,41 @@
+/* 
+  More complex vertex shader
+  by Daniel Jungblut, IWR Heidelberg, February 2008
+  revised by Susanne Kroemker, IWR Heidelberg, April 2014
+ */  
+
+
+void more_complex_vertex_shader(/*float4 position : POSITION,
+  out float4 out_position : POSITION,
+  uniform float scale_factor,
+  uniform float rotation*/) {
+/*
+  // Create scaling matrix
+  float2x2 scale_matrix = float2x2(scale_factor, 0.0, 0.0, scale_factor);
+
+  // Create 2-dimensional rotation matrix
+  float sin_rot, cos_rot;
+  sincos(rotation, sin_rot, cos_rot);
+
+  float2x2 rotation_matrix = float2x2(cos_rot, -sin_rot, sin_rot, cos_rot);
+
+  // Transform vertices by applying scaling matrix and the rotation matrix  
+  out_position = float4(mul(scale_matrix, mul(rotation_matrix, position.xy)), 0, 1);*/
+}
+
+
+// Explain the difference between varying and uniform parameters:
+// Varying parameters are different for each call of the shader, i.e. for each vertex or each fragment.
+// For example, the position that may vary for each vertex/fragment.
+// Uniform parameters are equal for all vertices or fragments. They are marked as 'uniform' in the Cg shader language. 
+// Their value is set in the main program. They don't vary from call-to-call of the shader.
+
+// Explain the term 'call-by-result':
+// 'Call-by-result' is a method to retun values to the calling function (without using 'return'). 
+// The call-by-result value is not initialized in the called function. 
+// The called function overwrites the value, and after it finishes, the value is copied back to the calling function.
+
+// Why does Cg explicitely support vectors of length 4?
+// Colors are described by their red, green, blue and alpha values, i.e. by a 4 dimensional vector.
+// Homogeneous coordinates are described by their x, y, z and w values, i.e. by a 4 dimensional vector.
+
